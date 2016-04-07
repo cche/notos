@@ -1,0 +1,34 @@
+<tool id="CpGoe" name="CpGoe" version="1.0.0">
+    <requirements>
+        <requirement type="package" version="5.8.0">perl</requirement>
+    </requirements>
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+    <command><![CDATA[
+        CpGoe.pl -f $fastafile -o $outfile -m $minlength
+    ]]></command>
+    <inputs>
+		<param name="fastafile" type="data" format="fasta" />
+		<param name="minlength" type="integer" value="200" help="Minimum length of the sequence to calculate CpGo/e ratio" />
+    </inputs>
+    <outputs>
+		<data name="outfile" format="tabular" />
+    </outputs>
+	<tests>
+		<test>
+			<param name="fastafile" value="9_seqs.fa"/>
+			<output name="outfile1" file="9_seqs_cpgoe.csv"/>
+		</test>
+	</tests>
+    <help><![CDATA[
+	CpGoe.pl -f fasta-file -o output_file -m minlength
+	
+	Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence
+    ]]></help>
+    <citations>
+        <citation>
+            None yet
+        </citation>
+    </citations>
+</tool>

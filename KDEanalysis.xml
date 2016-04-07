@@ -1,0 +1,69 @@
+<tool id="notos" name="Analyse CpGo/e ratios" version="1.0.0">
+    <requirements>
+        <requirement type="package" version="3.2.1">R</requirement>
+    </requirements>
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+    <command><![CDATA[
+		Rscript ${__tool_directory__}/KDEanalysis.r 
+		-o $fracOutl 
+		-d $minDist 
+		-c $confLevel 
+		-m $modeMass 
+		-b $bandWidth 
+		#if $bootstrap == "TRUE"
+		-B 
+		#end if
+		-r $BSrep 
+		#if $nofew == "TRUE"
+			-f
+		#end if
+		$species
+		$cpgoe
+    ]]></command>
+		<inputs>
+			<param name="species" size="30" type="text" value="my_species" label="Species name" />
+		    <param name="cpgoe" type="data" format="txt" />	
+			<param name="fracOutl" type="float" value="0.01" help="maximum fraction of CpGo/e ratios excluded as outliers [default %default]" label= "max fraction of CpGo/e ratios excluded as outliers" />
+			<param name="minDist" type="float" value="0.2" help="minimum distance between modes modes that are closer are joined [value %default]" label= "min distance between modes to join" />
+			<param name="confLevel" type="float" value="0.95" help="level of the confidence intervals of the mode positions [default %default]" label= "level of the confidence intervals of the mode positions [default %default]" />
+			<param name="modeMass" type="float" value="0.05" help="minimum probability mass of a mode [default %default]" label= "minimum probability mass of a mode [default %default]" />
+			<param name="bandWidth" type="float" value="1.06" help="bandwidth constant for kernels [default %default]" label= "bandwidth constant for kernels [default %default]" />
+			<param name="bootstrap" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="calculate confidence intervals of mode positions using bootstrap [default %default]" label= "bootstrap confidence intervals?" />
+			<param name="BSrep" type="integer" value="1500" help="number of bootstrap repetitions [default %default]" label= "number of bootstrap repetitions [default %default]" />
+			<param name="nofew" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="Do not print warning message when few datapoint are given." label= "Supress few datapoint warning" />
+		</inputs>
+		<outputs>
+			<data name="outlierHist" format="pdf" />
+			<data name="cutoff" format="tabular" />
+			<data name="kde" format="pdf" />
+		</outputs>
+    <tests>
+        <test>
+            <param name="cpgoe" value="10_std_unif.txt"/>
+            <output name="cutoff1" file="outliers_cutoff.csv"/>
+			<!--
+            <output name="outlierHist" file="outliers_hist.pdf"/>
+            <output name="kde" file="KDE.pdf"/>
+			-->
+        </test>
+    </tests>
+    <help><![CDATA[
+		"-o", "--frac-outl"			maximum fraction of CpGo/e ratios excluded as outliers [default %default]
+		"-d", "--min-dist"			minimum distance between modes, modes that are closer are joined [default %default]
+		"-c", "--conf-level"		level of the confidence intervals of the mode positions [default %default]
+		"-m", "--mode-mass"			minimum probability mass of a mode [default %default]
+		"-b", "--band-width"		bandwidth constant for kernels [default %default]
+		"-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap [default %default]
+		"-r", "--bootstrap-reps"	number of bootstrap repetitions [default %default]
+		"-H", "--outlier-hist-file"	outliers_hist.pdf
+		"-C", "--cutoff-file"		outliers_cutoff.xlsx
+		"-k", "--kde-file"			KDE.pdf
+    ]]></help>
+    <citations>
+        <citation>
+            None yet
+        </citation>
+    </citations>
+</tool>
