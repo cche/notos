@@ -53,11 +53,11 @@ sub VERSION_MESSAGE
 # ... read argument
 my %opts;
 getopts('f:o:m:dvh', \%opts);
-if ($#ARGV != 0) {
-  print STDERR "Exactly one argument has to be provided, the name of the input FASTA file.\n" .
-               "Moreover, the options must be listed first, then the name of the input FASTA file.\n";
-  exit 1;
-}
+#if ($#ARGV != 0) {
+#  print STDERR "Exactly one argument has to be provided, the name of the input FASTA file.\n" .
+#               "Moreover, the options must be listed first, then the name of the input FASTA file.\n";
+#  exit 1;
+#}
 my $fasta_fname = $opts{'f'};
 
 # ... read options
