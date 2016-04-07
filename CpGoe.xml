@@ -1,4 +1,4 @@
-<tool id="CpGoe" name="CpGoe" version="1.0.0">
+<tool id="CpGoe" name="Calculate CpGo/e" version="1.0.0">
     <requirements>
         <requirement type="package" version="5.8.0">perl</requirement>
     </requirements>
@@ -6,7 +6,7 @@
         <exit_code range="1:" />
     </stdio>
     <command><![CDATA[
-        CpGoe.pl -f $fastafile -o $outfile -m $minlength
+		perl ${__tool_directory__}/CpGoe.pl -f $fastafile -o $outfile -m $minlength
     ]]></command>
     <inputs>
 		<param name="fastafile" type="data" format="fasta" />
