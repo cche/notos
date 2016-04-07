@@ -23,14 +23,14 @@
                     <package sha256sum="bca93c8646b731758f1cc888ee6c25e8c1ecf2364d7f556489bd879413d20abd">
 						https://github.com/cche/KDEAnalysis_deps/blob/master/optparse_1.3.2.tar.gz?raw=true
                     </package>
-                    <package sha256sum="70024b6950025cc027022ee409f382e5ad3680c0a25bcd404bfc16418be8add5">
-						https://github.com/cche/KDEAnalysis_deps/blob/master/doParallel_1.0.10.tar.gz?raw=true
-                    </package>
                     <package sha256sum="1ef03f770f726a62e3753f2402eb26b226245958fa99d570d003fc9e47d35881">
 						https://github.com/cche/KDEAnalysis_deps/blob/master/foreach_1.4.3.tar.gz?raw=true
                     </package>
                     <package sha256sum="ae4ea23385776eb0c06c992a3da6b0256a6c84558c1061034c5a1fbdd43d05b8">
 						https://github.com/cche/KDEAnalysis_deps/blob/master/iterators_1.0.8.tar.gz?raw=true
+                    </package>
+                    <package sha256sum="70024b6950025cc027022ee409f382e5ad3680c0a25bcd404bfc16418be8add5">
+						https://github.com/cche/KDEAnalysis_deps/blob/master/doParallel_1.0.10.tar.gz?raw=true
                     </package>
                     <package sha256sum="2a3b81e60dafdd092d2bdd3513d7038855ca7d113dc71df1229f7518382a3e39">
 						https://github.com/cche/KDEAnalysis_deps/blob/master/moments_0.14.tar.gz?raw=true
