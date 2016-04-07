@@ -1,6 +1,7 @@
 <tool id="notos" name="Analyse CpGo/e ratios" version="1.0.0">
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
+        <requirement type="package" version="1.0.0">notos</requirement>
     </requirements>
     <stdio>
         <exit_code range="1:" />
@@ -35,9 +36,9 @@
 			<param name="nofew" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="Do not print warning message when few datapoint are given." label= "Supress few datapoint warning" />
 		</inputs>
 		<outputs>
-			<data name="outlierHist" format="pdf" />
-			<data name="cutoff" format="tabular" />
-			<data name="kde" format="pdf" />
+			<data name="outlierHist" format="pdf" from_work_dir="outliers_hist.pdf" />
+			<data name="cutoff" format="tabular" from_work_dir="outliers_cutoff.csv" />
+			<data name="kde" format="pdf" from_work_dir="KDE.pdf"/>
 		</outputs>
     <tests>
         <test>
