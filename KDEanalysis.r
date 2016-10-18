@@ -199,8 +199,13 @@ option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default
                                 help = "name of the output file for the outlier cutoff [default %default]"),
                     make_option(c("-k", "--kde-file"), type = "character", default = "KDE.pdf", 
                                 help = "name of the output file for the KDE [default %default]"),
-                    make_option(c("-f", "--no-warning-few-seqs"), action="store_true", default = FALSE, 
-                                help = "suppress warning in case the input file only contains few values [default %default]")
+                    make_option(c("-p", "--peak-file"), type = "character", default = "peaks.csv", 
+                                help = "name of the output file describing the peaks of the KDE [default %default]"),
+                    make_option(c("-s", "--bootstrap-file"), type = "character", default = "bootstrap.csv", 
+                                help = "name of the output file for the bootstrap results [default %default]"),
+                    make_option(c("-f", "--no-warning-few-seqs"), action = "store_true", default = FALSE, 
+                                help = paste("suppress warning in case the input file only contains few values ",
+                                             "[default %default]", sep = ""))
                    )                                      
 op <- OptionParser(usage = "notos.r [options] spc_name_1 ... spc_name_N CpGoe_file_name_1 ... CpGoe_file_name_N", 
                    description = paste("\nDescription: Notos generates a histogram and a kernel density estimator from files containing CpGo/e ratios. ",
@@ -344,6 +349,57 @@ if (as.vector(g)[1] != -1) {
   }
 }
 
+
+
+
+
+
+
+
+# ... ... check peak descriptives output file name
+peak.fname <- args$options$`peak-file`
+if ( file.exists(peak.fname) && (file.info(peak.fname)$isdir) ) {
+  stop(paste("File name for the peak descriptives refers to a directory:", peak.fname))
+}
+v <- strsplit(peak.fname, split = ".", fixed = TRUE)[[1]]
+if ((length(v) == 1) || (v[ length(v) ] != "csv")) {
+  warning(paste("File name for the peak descriptives does not have a .csv extension:", peak.fname))
+}
+g <- gregexpr(pattern ='/', peak.fname)[[1]]
+if (as.vector(g)[1] != -1) {
+  v <- as.vector(g)
+  d <- substr(peak.fname, 1, v[length(v)])
+  if (!file.exists(d)) {
+    stop(paste("Path to file for the peak descriptives is not valid:", peak.fname))
+  }
+}
+
+# ... ... check bootstrap results output file name
+bstrp.fname <- args$options$`bootstrap-file`
+if ( file.exists(bstrp.fname) && (file.info(bstrp.fname)$isdir) ) {
+  stop(paste("File name for the bootstrap results refers to a directory:", bstrp.fname))
+}
+v <- strsplit(bstrp.fname, split = ".", fixed = TRUE)[[1]]
+if ((length(v) == 1) || (v[ length(v) ] != "csv")) {
+  warning(paste("File name for the bootstrap results does not have a .csv extension:", bstrp.fname))
+}
+g <- gregexpr(pattern ='/', bstrp.fname)[[1]]
+if (as.vector(g)[1] != -1) {
+  v <- as.vector(g)
+  d <- substr(bstrp.fname, 1, v[length(v)])
+  if (!file.exists(d)) {
+    stop(paste("Path to file for the bootstrap results is not valid:", bstrp.fname))
+  }
+}
+
+
+
+
+
+
+
+
+
 # ... ... check CpGo/e input file names
 num.spec <- num.args / 2
 spec.names <- args$args[1:num.spec]
@@ -451,7 +507,19 @@ invisible(dev.off())
 write.table(tab.des, file = cutoff.fname, sep = "\t")
 
 
-# plot KDE
+# plot KDE and output quantities characterizing the peaks and the bootstrap results
+# ... table with quantities characterizing the peaks
+v <- col.names.peaks()
+tab1.m <- data.frame(matrix(NA, nrow = num.spec, ncol = length(v)))
+names(tab1.m) <- col.names.peaks()
+rownames(tab1.m) <- spec.names
+
+# ... table for the bootstrap
+tab2.m <- data.frame(matrix(NA, nrow = num.spec, ncol = 7))
+names(tab2.m) <- col.names.bs()
+rownames(tab2.m) <- spec.names
+
+# ... plotting
 t.height <- 6
 t.width <- 20
 pdf(kde.fname, height = t.height,width = t.width, paper = "special")
@@ -471,7 +539,12 @@ for (i in 1:num.spec) {
   }
   
   # plotting
-  plot.KDE(obs.cl, t.name = spec.names[i], bs.cis = use.bstrp, bstrp.reps = bstrp.reps, conf.lev = conf.lev, min.dist = min.dist, mode.mass = mode.mass, band.width = band.width)
+  l <- plot.KDE(obs.cl, t.name = spec.names[i], bs.cis = use.bstrp, bstrp.reps = bstrp.reps, conf.lev = conf.lev, 
+                min.dist = min.dist, mode.mass = mode.mass, band.width = band.width)
+  tab1.m[i, ] <- l$tab.des
+  if (use.bstrp) {
+    tab2.m[i, ] <- l$tab.bs
+  }
 } 
 invisible(dev.off())
 #sessionInfo()
