@@ -20,12 +20,12 @@
 		#if $nofew == "TRUE"
 			-f
 		#end if
-		$species
+		"$species"
 		$cpgoe
     ]]></command>
 		<inputs>
 			<param name="species" size="30" type="text" value="my_species" label="Species name" />
-		    <param name="cpgoe" type="data" format="txt" />	
+		    <param name="cpgoe" type="data" format="tabular" />	
 			<param name="fracOutl" type="float" value="0.01" help="maximum fraction of CpGo/e ratios excluded as outliers [default %default]" label= "max fraction of CpGo/e ratios excluded as outliers" />
 			<param name="minDist" type="float" value="0.2" help="minimum distance between modes modes that are closer are joined [value %default]" label= "min distance between modes to join" />
 			<param name="confLevel" type="float" value="0.95" help="level of the confidence intervals of the mode positions [default %default]" label= "level of the confidence intervals of the mode positions [default %default]" />
@@ -36,9 +36,9 @@
 			<param name="nofew" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="Do not print warning message when few datapoint are given." label= "Supress few datapoint warning" />
 		</inputs>
 		<outputs>
-			<data name="outlierHist" format="pdf" from_work_dir="outliers_hist.pdf" />
-			<data name="cutoff" format="tabular" from_work_dir="outliers_cutoff.csv" />
-			<data name="kde" format="pdf" from_work_dir="KDE.pdf"/>
+			<data name="outlierHist" format="pdf" from_work_dir="outliers_hist.pdf" label="Outlier Histogram on ${on_string}"/>
+			<data name="cutoff" format="tabular" from_work_dir="outliers_cutoff.csv" label="Outlier cutoff on ${on_string}" />
+			<data name="kde" format="pdf" from_work_dir="KDE.pdf" label="KDE analysis on ${on_string}" />
 		</outputs>
     <tests>
         <test>
@@ -51,16 +51,20 @@
         </test>
     </tests>
     <help><![CDATA[
-		"-o", "--frac-outl"			maximum fraction of CpGo/e ratios excluded as outliers [default %default]
-		"-d", "--min-dist"			minimum distance between modes, modes that are closer are joined [default %default]
-		"-c", "--conf-level"		level of the confidence intervals of the mode positions [default %default]
-		"-m", "--mode-mass"			minimum probability mass of a mode [default %default]
-		"-b", "--band-width"		bandwidth constant for kernels [default %default]
-		"-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap [default %default]
-		"-r", "--bootstrap-reps"	number of bootstrap repetitions [default %default]
-		"-H", "--outlier-hist-file"	outliers_hist.pdf
-		"-C", "--cutoff-file"		outliers_cutoff.xlsx
-		"-k", "--kde-file"			KDE.pdf
+Model the distribution of CpG o/e ratios using Kernel Density Estimation.
+
+Parameters:
+
+  "-o", "--frac-outl"			maximum fraction of CpGo/e ratios excluded as outliers [default %default]
+  "-d", "--min-dist"			minimum distance between modes, modes that are closer are joined [default %default]
+  "-c", "--conf-level"		level of the confidence intervals of the mode positions [default %default]
+  "-m", "--mode-mass"			minimum probability mass of a mode [default %default]
+  "-b", "--band-width"		bandwidth constant for kernels [default %default]
+  "-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap [default %default]
+  "-r", "--bootstrap-reps"	number of bootstrap repetitions [default %default]
+  "-H", "--outlier-hist-file"	outliers_hist.pdf
+  "-C", "--cutoff-file"		outliers_cutoff.xlsx
+  "-k", "--kde-file"			KDE.pdf
     ]]></help>
     <citations>
         <citation>
