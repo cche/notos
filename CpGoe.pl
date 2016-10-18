@@ -66,12 +66,12 @@ my $has_file_output;
 if (exists($opts{'o'})) {
   $out_fname = $opts{'o'};
   $has_file_output = 1;
-} 
+}
 else {
   $has_file_output = 0;
 }
 
-my $min_len; 
+my $min_len;
 if (exists($opts{'m'})) {
   $min_len = $opts{'m'}
 }
@@ -95,7 +95,7 @@ if (-e $fasta_fname) {
       print STDERR "could not open $fasta_fname\n";
       exit 1;
     }
-  } 
+  }
   else {
     print STDERR "$fasta_fname is not a file\n";
     exit 1;
@@ -161,7 +161,7 @@ while ( <$FASTA> ) {
       push(@names, $_);
       push(@seqs, "");
       $is_first = 0;
-    } 
+    }
     else {
       if ($is_first) {
         print STDERR "first non-comment line of FASTA file " . $fasta_fname . " does not start with \'>\'\n";
@@ -203,7 +203,7 @@ for (my $i = 0; $i <= $#names; ++$i) {
       $str .= "Sequence " . $names[$i] . " in FASTA file $fasta_fname is empty\n";
     }
     $err = 1;
-    ++$num;     
+    ++$num;
   }
 }
 if ($err) {
@@ -264,7 +264,7 @@ if ($has_file_output) {
 
 # ... print header
 if ($has_header) {
-  print $OUT "#name\tlength\tCpGs\tGpCs\tCs\tGs\tNs\tCpG o\/e\n"; 
+  print $OUT "#name\tlength\tCpGs\tGpCs\tCs\tGs\tNs\tCpG o\/e\n";
 }
 
 
@@ -284,20 +284,20 @@ for my $i (0 .. $#names) {
   my $num_N = () = ( $seqs[$i] =~ m/N/gi );
   my $len = length($seqs[$i]);
   my $l = $len - $num_N;
-  if ($l >= $min_len) { 
+  if ($l >= $min_len) {
     my $num_G = () = ( $seqs[$i] =~ m/G/gi );
     my $num_C = () = ( $seqs[$i] =~ m/C/gi );
     my $num_CG = () = ( $seqs[$i] =~ m/CG/gi );
     my $num_GC = () = ( $seqs[$i] =~ m/GC/gi );
     my $CpGoe;
-    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) ) { 
+    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) ) {
       $CpGoe = 0;
-    }   
+    }
     else {
       my $x = $num_CG / ($num_C * $num_G);
       my $y = $l**2 / ($l - 1);
       $CpGoe = $x * $y;
-    }  
+    }
     print $OUT $names[$i] . "\t";
     if ($is_detailed) {
       print $OUT $len . "\t" . $num_CG . "\t" . $num_GC . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
