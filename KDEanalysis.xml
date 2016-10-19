@@ -26,18 +26,19 @@
 		<inputs>
 			<param name="species" size="30" type="text" value="my_species" label="Species name" />
 		    <param name="cpgoe" type="data" format="tabular" />	
-			<param name="fracOutl" type="float" value="0.01" help="maximum fraction of CpGo/e ratios excluded as outliers [default %default]" label= "max fraction of CpGo/e ratios excluded as outliers" />
-			<param name="minDist" type="float" value="0.2" help="minimum distance between modes modes that are closer are joined [value %default]" label= "min distance between modes to join" />
-			<param name="confLevel" type="float" value="0.95" help="level of the confidence intervals of the mode positions [default %default]" label= "level of the confidence intervals of the mode positions [default %default]" />
-			<param name="modeMass" type="float" value="0.05" help="minimum probability mass of a mode [default %default]" label= "minimum probability mass of a mode [default %default]" />
-			<param name="bandWidth" type="float" value="1.06" help="bandwidth constant for kernels [default %default]" label= "bandwidth constant for kernels [default %default]" />
-			<param name="bootstrap" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="calculate confidence intervals of mode positions using bootstrap [default %default]" label= "bootstrap confidence intervals?" />
-			<param name="BSrep" type="integer" value="1500" help="number of bootstrap repetitions [default %default]" label= "number of bootstrap repetitions [default %default]" />
+			<param name="fracOutl" type="float" value="0.01" help="maximum fraction of CpGo/e ratios excluded as outliers" label= "max fraction of CpGo/e ratios excluded as outliers" />
+			<param name="minDist" type="float" value="0.2" help="minimum distance between modes. Modes that are closer are joined" label= "min distance between modes to join" />
+			<param name="confLevel" type="float" value="0.95" help="level of the confidence intervals of the mode positions" label= "level of the confidence intervals of the mode positions" />
+			<param name="modeMass" type="float" value="0.05" help="minimum probability mass of a mode " label= "minimum probability mass of a mode" />
+			<param name="bandWidth" type="float" value="1.06" help="bandwidth constant for kernels " label= "bandwidth constant for kernels" />
+			<param name="bootstrap" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="calculate confidence intervals of mode positions using bootstrap" label= "bootstrap confidence intervals?" />
+			<param name="BSrep" type="integer" value="1500" help="number of bootstrap repetitions " label= "number of bootstrap repetitions " />
 			<param name="nofew" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="Do not print warning message when few datapoint are given." label= "Supress few datapoint warning" />
 		</inputs>
 		<outputs>
 			<data name="outlierHist" format="pdf" from_work_dir="outliers_hist.pdf" label="Outlier Histogram on ${on_string}"/>
 			<data name="cutoff" format="tabular" from_work_dir="outliers_cutoff.csv" label="Outlier cutoff on ${on_string}" />
+			<data name="peaks" format="tabular" from_work_dir="peaks.csv" label="Peaks on ${on_string}" />
 			<data name="kde" format="pdf" from_work_dir="KDE.pdf" label="KDE analysis on ${on_string}" />
 		</outputs>
     <tests>
@@ -53,18 +54,22 @@
     <help><![CDATA[
 Model the distribution of CpG o/e ratios using Kernel Density Estimation.
 
-Parameters:
+Parameters::
 
-  "-o", "--frac-outl"			maximum fraction of CpGo/e ratios excluded as outliers [default %default]
-  "-d", "--min-dist"			minimum distance between modes, modes that are closer are joined [default %default]
-  "-c", "--conf-level"		level of the confidence intervals of the mode positions [default %default]
-  "-m", "--mode-mass"			minimum probability mass of a mode [default %default]
-  "-b", "--band-width"		bandwidth constant for kernels [default %default]
-  "-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap [default %default]
-  "-r", "--bootstrap-reps"	number of bootstrap repetitions [default %default]
-  "-H", "--outlier-hist-file"	outliers_hist.pdf
-  "-C", "--cutoff-file"		outliers_cutoff.xlsx
-  "-k", "--kde-file"			KDE.pdf
+  "-o", "--frac-outl"			maximum fraction of CpGo/e ratios excluded as outliers [default 0.01]
+  "-d", "--min-dist"			minimum distance between modes, modes that are closer are joined [default 0.2]
+  "-c", "--conf-level"			level of the confidence intervals of the mode positions [default 0.95]
+  "-m", "--mode-mass"			minimum probability mass of a mode [default 0.05]
+  "-b", "--band-width"			bandwidth constant for kernels [default 1.06]
+  "-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap.
+  "-r", "--bootstrap-reps"			number of bootstrap repetitions [default 1500]
+  "-p", "--peak-file"			name of the output file describing the peaks of the KDE [default peaks.csv]
+  "-s", "--bootstrap-file"			Name of the output file with bootstrap values [default "bootstrap.csv"]
+  "-H", "--outlier-hist-file"			Outliers histogram file [default outliers_hist.pdf]
+  "-C", "--cutoff-file"			Outliers cutoff file [default outliers_cutoff.csv]
+  "-k", "--kde-file"			Kernel density estimation graph [default KDE.pdf]
+
+
     ]]></help>
     <citations>
         <citation>
