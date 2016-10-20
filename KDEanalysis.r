@@ -549,7 +549,7 @@ for (i in 1:num.spec) {
 invisible(dev.off())
 #sessionInfo()
 # ... output quantities in tables
-write.csv(tab1.m, file = peak.fname)  
+write.csv(tab1.m, file = peak.fname, sep = "\t")  
 if (use.bstrp) {
-    write.csv(tab2.m, file = bstrp.fname)    
+    write.csv(tab2.m, file = bstrp.fname, sep = "\t")    
 }
