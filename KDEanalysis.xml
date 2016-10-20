@@ -62,10 +62,10 @@ Parameters::
   "-m", "--mode-mass"			minimum probability mass of a mode [default 0.05]
   "-b", "--band-width"			bandwidth constant for kernels [default 1.06]
   "-B", "--bootstrap"			calculate confidence intervals of mode positions using bootstrap.
-  "-r", "--bootstrap-reps"			number of bootstrap repetitions [default 1500]
+  "-r", "--bootstrap-reps"		number of bootstrap repetitions [default 1500]
   "-p", "--peak-file"			name of the output file describing the peaks of the KDE [default peaks.csv]
-  "-s", "--bootstrap-file"			Name of the output file with bootstrap values [default "bootstrap.csv"]
-  "-H", "--outlier-hist-file"			Outliers histogram file [default outliers_hist.pdf]
+  "-s", "--bootstrap-file"		Name of the output file with bootstrap values [default "bootstrap.csv"]
+  "-H", "--outlier-hist-file"	Outliers histogram file [default outliers_hist.pdf]
   "-C", "--cutoff-file"			Outliers cutoff file [default outliers_cutoff.csv]
   "-k", "--kde-file"			Kernel density estimation graph [default KDE.pdf]
 
