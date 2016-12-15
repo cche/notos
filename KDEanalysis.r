@@ -95,34 +95,41 @@ proc.outliers <- function(obs, frac.outl) {
 read.CpGoe <- function(fname, warn) {
 	# read input file line by line, split by whitespaces, assign last substring to CpGo/e ratios
 	# ... remove comments and trailing whitespaces
-	v <- readLines(fname)
-	lines <- c()
-	obs <- c()
-	if (length(v) > 0) {
-		for (i in 1:length(v)) {
-			if ( substr(v[i], 1, 1) != "#" ) {
-				str <- gsub("^\\s+|\\s+$", "", v[i])   
-				#vals <- strsplit(str, "\\s+")
-				#print(vals, str(vals[2]), vals[length(vals)])
-				val <- tail(strsplit(str,"\\s+")[[1]],1)
-				if (grepl(",", val)) {
-					stop( paste(fname, "contains commas, maybe using comma as decimal sign or as separator", val), call. = FALSE )
-				}
-				if (grepl("[^0123456789,+\\.eE]", val)) {
-					stop( paste(fname, "contains illegal characters:", str), call. = FALSE )
-				}
-				obs <- c(obs, val)
-			}
-		}
-	}
+	v <- read.table(fname,  fill = TRUE, col.names = c("seq", "val"))
+	obs <- v$val
 
-	# are there enough values?
-	if (length(obs) < 3) {
-		stop( paste("Too few values could be read from", fname, "(less than 3), probably the file contains less than three CpGo/e values or", 
-					"the CpGo/e ratios have not been put on separate lines"), call. = FALSE )
-	} 
+	# v <- readLines(fname)
+	# lines <- c()
+	# obs <- c()
+	# if (length(v) > 0) {
+	# 	print("number of lines", str(length(v)))
+	# 	for (i in 1:length(v)) {
+	# 		if ( substr(v[i], 1, 1) != "#" ) {
+	# 			str <- gsub("^\\s+|\\s+$", "", v[i])   
+	# 			#vals <- strsplit(str, "\\s+")
+	# 			#print(vals, str(vals[2]), vals[length(vals)])
+	# 			val <- tail(strsplit(str,"\\s+")[[1]],1)
+	# 			if (grepl(",", val)) {
+	# 				stop( paste(fname, "contains commas, maybe using comma as decimal sign or as separator", val), call. = FALSE )
+	# 			}
+	# 			if (grepl("[^0123456789,+\\.eE]", val)) {
+	# 				stop( paste(fname, "contains illegal characters:", str), call. = FALSE )
+	# 			}
+	# 			obs <- c(obs, val)
+	# 		}
+	# 		if (i %% 1000 == 0) {
+	# 			print (str(i))
+	# 		}
+	# 	}
+	# }
 
-	obs <- as.numeric(obs)
+	# # are there enough values?
+	# if (length(obs) < 3) {
+	# 	stop( paste("Too few values could be read from", fname, "(less than 3), probably the file contains less than three CpGo/e values or", 
+	# 				"the CpGo/e ratios have not been put on separate lines"), call. = FALSE )
+	# } 
+
+	obs <- obs[!is.na(obs)]
 	return(obs)
 }
 
@@ -387,12 +394,8 @@ tmp.fnames <- c()
 for (i in 1:num.spec) {
   fname <- cpgoe.fnames[i]
 
-	print ("Starting reading file")
-
   obs <- read.CpGoe(fname, TRUE)
 
-  print(paste("Read ", fname))
-  
   # check CpGo/e ratios
   for (j in 1:length(obs)) {
     # is format legal?
@@ -411,9 +414,6 @@ for (i in 1:num.spec) {
       }    
     }
   }
-  
-  print("Checked CpGoe values")
-  print("Processing outliers")
 
   # process outliers and store the results
   obs.org <- obs
@@ -435,8 +435,6 @@ for (i in 1:num.spec) {
   obs.cl <- l[["obs.cl"]]
   tab.des[i, "used"] <- l[["used"]]
   
-  print("Startind histograms")
-
   # Histograms
   # ... histogram 1: original data with zeros
   t.breaks <- seq(0, max(obs.org) + 1, by = 0.03)
@@ -463,16 +461,11 @@ for (i in 1:num.spec) {
   abline(v = me.obs, col = 'red', lwd = 2)
   abline(v = c(ll.me, ul.me), col = "red")
   
-  print("done")
 }
 invisible(dev.off())
 
-print("Writing table")
-
 # output cutoff quantities
 write.table(tab.des, file = cutoff.fname, sep = "\t")
-
-print("Storing peaks")
 
 # plot KDE and output quantities characterizing the peaks and the bootstrap results
 # ... table with quantities characterizing the peaks
@@ -481,15 +474,11 @@ tab1.m <- data.frame(matrix(NA, nrow = num.spec, ncol = length(v)))
 names(tab1.m) <- col.names.peaks()
 rownames(tab1.m) <- spec.names
 
-print("Storing bootstrap")
-
 # ... table for the bootstrap
 tab2.m <- data.frame(matrix(NA, nrow = num.spec, ncol = 7))
 names(tab2.m) <- col.names.bs()
 rownames(tab2.m) <- spec.names
 
-
-print("Plotting KDE")
 
 # ... plotting
 t.height <- 6
@@ -520,9 +509,6 @@ for (i in 1:num.spec) {
 } 
 invisible(dev.off())
 #sessionInfo()
-
-
-print("Writing peaks and boostrap")
 
 # ... output quantities in tables
 write.table(tab1.m, file = peak.fname, sep = "\t")  
