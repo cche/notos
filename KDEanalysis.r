@@ -93,83 +93,37 @@ proc.outliers <- function(obs, frac.outl) {
 # Read CpGo/e ratios from file
 # warn: issue warning if necessary
 read.CpGoe <- function(fname, warn) {
-  # read input file line by line, split by whitespaces, assign last substring to CpGo/e ratios
-  # ... remove comments and trailing whitespaces
-  v <- readLines(fname)
-  lines <- c()
-  if (length(v) > 0) {
-    for (i in 1:length(v)) {
-      if ( substr(v[i], 1, 1) != "#" ) {
-        str <- gsub("^\\s+|\\s+$", "", v[i])   
-        lines <- c(lines, str)
-      }
-    }
-  }
-  
-  # ... check whether file is empty
-  if (length(lines) == 0) {
-    stop( paste(fname, "is empty"), call. = FALSE )
-  }
+	# read input file line by line, split by whitespaces, assign last substring to CpGo/e ratios
+	# ... remove comments and trailing whitespaces
+	v <- readLines(fname)
+	lines <- c()
+	obs <- c()
+	if (length(v) > 0) {
+		for (i in 1:length(v)) {
+			if ( substr(v[i], 1, 1) != "#" ) {
+				str <- gsub("^\\s+|\\s+$", "", v[i])   
+				#vals <- strsplit(str, "\\s+")
+				#print(vals, str(vals[2]), vals[length(vals)])
+				val <- tail(strsplit(str,"\\s+")[[1]],1)
+				if (grepl(",", val)) {
+					stop( paste(fname, "contains commas, maybe using comma as decimal sign or as separator", val), call. = FALSE )
+				}
+				if (grepl("[^0123456789,+\\.eE]", val)) {
+					stop( paste(fname, "contains illegal characters:", str), call. = FALSE )
+				}
+				obs <- c(obs, val)
+			}
+		}
+	}
 
-  # ... determine whether file contains sequence names or not
-  v <- strsplit(lines[1], "\\s+")[[1]]
-  has.names <- (length(v) > 1) 
+	# are there enough values?
+	if (length(obs) < 3) {
+		stop( paste("Too few values could be read from", fname, "(less than 3), probably the file contains less than three CpGo/e values or", 
+					"the CpGo/e ratios have not been put on separate lines"), call. = FALSE )
+	} 
 
-  # ... read in data
-  obs <- c()
-  names <- c()
-  for (i in 1:length(lines)) {    
-    # check whether number of entries in the current line is correct
-    v <- strsplit(lines[i], "\\s+")[[1]]
-    a <- (length(v) == 1) && has.names 
-    b <- (length(v) > 1) && !has.names 
-    if (a || b)  {
-      stop( paste(fname, " contains sequence names on some lines and no sequence names on others \n", 
-                  "line 1: ", lines[1], "\n", "line ", i, ": ", lines[i], "\n", sep = ""), call. = FALSE )
-    }
-    
-    # store current line
-    obs <- c( obs, v[ length(v) ] )
-    if (length(v) > 1) {
-      str <- v[1]
-      if (length(v) > 2) {
-        for (j in 2:(length(v) - 1)) {
-          str = paste(str, v[j])
-        }
-      }
-      names <- c(names, str)
-    }
-  }
-  
-  # check for commas
-  for (i in 1:length(obs)) {
-    str <- as.character( obs[i] )
-    str <- gsub("[^,]", "", str)
-    if (nchar(str) > 0) {
-      err.str <- paste("Observation", i, "in", fname)
-      stop( paste(err.str, "contains commas, maybe using comma as decimal sign or as separator"), call. = FALSE )
-    }
-  }
-  
-  # check for illegal characters (other than comma)
-  for (i in 1:length(obs)) {
-    str <- as.character( obs[i] )
-    str <- gsub("[0123456789,+\\.eE]", "", str)
-    str <- gsub("-", "", str, fixed = TRUE)
-    if (nchar(str) > 0) {
-      err.str <- paste("Observation", i, "in", fname)
-      stop( paste(err.str, "contains illegal characters:", str), call. = FALSE )
-    }
-  }
-
-  # are there enough values?
-  if (length(obs) < 3) {
-    stop( paste("Too few values could be read from", fname, "(less than 3), probably the file contains less than three CpGo/e values or", 
-                "the CpGo/e ratios have not been put on separate lines"), call. = FALSE )
-  } 
-  
-  obs <- as.numeric(obs)
-  return(obs)
+	obs <- as.numeric(obs)
+	return(obs)
 }
 
 
@@ -432,7 +386,12 @@ tmp.fnames <- c()
 # ... iterate through species
 for (i in 1:num.spec) {
   fname <- cpgoe.fnames[i]
+
+	print ("Starting reading file")
+
   obs <- read.CpGoe(fname, TRUE)
+
+  print(paste("Read ", fname))
   
   # check CpGo/e ratios
   for (j in 1:length(obs)) {
@@ -453,6 +412,9 @@ for (i in 1:num.spec) {
     }
   }
   
+  print("Checked CpGoe values")
+  print("Processing outliers")
+
   # process outliers and store the results
   obs.org <- obs
   l <- proc.outliers(obs, frac.outl)
@@ -473,7 +435,8 @@ for (i in 1:num.spec) {
   obs.cl <- l[["obs.cl"]]
   tab.des[i, "used"] <- l[["used"]]
   
-  
+  print("Startind histograms")
+
   # Histograms
   # ... histogram 1: original data with zeros
   t.breaks <- seq(0, max(obs.org) + 1, by = 0.03)
@@ -499,13 +462,17 @@ for (i in 1:num.spec) {
       sub = "Cleaned data", prob = TRUE)
   abline(v = me.obs, col = 'red', lwd = 2)
   abline(v = c(ll.me, ul.me), col = "red")
+  
+  print("done")
 }
 invisible(dev.off())
 
+print("Writing table")
 
 # output cutoff quantities
 write.table(tab.des, file = cutoff.fname, sep = "\t")
 
+print("Storing peaks")
 
 # plot KDE and output quantities characterizing the peaks and the bootstrap results
 # ... table with quantities characterizing the peaks
@@ -514,10 +481,15 @@ tab1.m <- data.frame(matrix(NA, nrow = num.spec, ncol = length(v)))
 names(tab1.m) <- col.names.peaks()
 rownames(tab1.m) <- spec.names
 
+print("Storing bootstrap")
+
 # ... table for the bootstrap
 tab2.m <- data.frame(matrix(NA, nrow = num.spec, ncol = 7))
 names(tab2.m) <- col.names.bs()
 rownames(tab2.m) <- spec.names
+
+
+print("Plotting KDE")
 
 # ... plotting
 t.height <- 6
@@ -548,6 +520,10 @@ for (i in 1:num.spec) {
 } 
 invisible(dev.off())
 #sessionInfo()
+
+
+print("Writing peaks and boostrap")
+
 # ... output quantities in tables
 write.table(tab1.m, file = peak.fname, sep = "\t")  
 if (use.bstrp) {
