@@ -444,13 +444,13 @@ for (i in 1:num.spec) {
   mtext(paste(spec.names[i]), side = 3, adj = 0)
 
   # ... histogram 2: mean / sd based
-  hist(obs, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
+  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
       sub = "Cleaned data, mean +- k*sd, k=2,...,5", prob = TRUE)
   abline(v = mu.obs, col = 'red', lwd = 2)
   abline(v = c(ll.mu, ul.mu), col = "red")
 
   # ... histogram 3: median / iqr based
-  hist(obs, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
+  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
       sub = "Cleaned data, Q1/3 +- k*IQR, k=2,...,5", prob = TRUE)
   abline(v = me.obs, col = 'red', lwd = 2)
   abline(v = c(ll.me, ul.me), col = "red")
