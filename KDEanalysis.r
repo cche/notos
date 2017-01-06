@@ -465,7 +465,7 @@ for (i in 1:num.spec) {
 invisible(dev.off())
 
 # output cutoff quantities
-write.table(tab.des, file = cutoff.fname, sep = "\t")
+write.table(tab.des, file = cutoff.fname, sep = "\t", col.names=NA)
 
 # plot KDE and output quantities characterizing the peaks and the bootstrap results
 # ... table with quantities characterizing the peaks
@@ -511,7 +511,7 @@ invisible(dev.off())
 #sessionInfo()
 
 # ... output quantities in tables
-write.table(tab1.m, file = peak.fname, sep = "\t")  
+write.table(tab1.m, file = peak.fname, sep = "\t", col.names=NA)  
 if (use.bstrp) {
-    write.table(tab2.m, file = bstrp.fname, sep = "\t")    
+    write.table(tab2.m, file = bstrp.fname, sep = "\t", col.names=NA)
 }
