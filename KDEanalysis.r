@@ -28,7 +28,6 @@ source( file.path( FCTN.DIR, "Kernel_function_form.R") )
 MAX.CPGOE <- 10   # maximum value for CpGo/e ratios
 
 
-
 # process outliers and return quantities characterizing the distribution
 # obs: CpGo/e ratios
 proc.outliers <- function(obs, frac.outl) {
@@ -60,12 +59,11 @@ proc.outliers <- function(obs, frac.outl) {
   ll.me <- quantile(obs, 0.25) - (2 : 5) * iqr.obs
   names(ul.mu) <- names(ll.mu) <- 2 : 5
   names(ul.me) <- names(ll.me) <- 2 : 5
-  ret[["ul.mu"]] <- ul.mu 
-  ret[["ll.mu"]] <- ll.mu 
-  ret[["ul.me"]] <- ul.me 
-  ret[["ll.me"]] <- ll.me 
+  ret[["ul.mu"]] <- ul.mu
+  ret[["ll.mu"]] <- ll.mu
+  ret[["ul.me"]] <- ul.me
+  ret[["ll.me"]] <- ll.me
   
-
   # summary statistics and data output   
   # ... calculate proportion of data excluded when using different ranges
   ret[["prop2"]] <- prop2 <- length(obs[obs < ll.me["2"] | ul.me["2"] < obs]) / no.obs.raw
@@ -88,7 +86,6 @@ proc.outliers <- function(obs, frac.outl) {
   ret[["valid"]] <- TRUE
   return(ret)
 }
-
 
 
 # Read CpGo/e ratios from file
@@ -133,7 +130,6 @@ read.CpGoe <- function(fname, warn) {
 	obs <- obs[!is.na(obs)]
 	return(obs)
 }
-
 
 
 # process command line arguments
@@ -312,12 +308,6 @@ if (as.vector(g)[1] != -1) {
 }
 
 
-
-
-
-
-
-
 # ... ... check peak descriptives output file name
 peak.fname <- args$options$`peak-file`
 if ( file.exists(peak.fname) && (file.info(peak.fname)$isdir) ) {
@@ -355,13 +345,6 @@ if (as.vector(g)[1] != -1) {
 }
 
 
-
-
-
-
-
-
-
 # ... ... check CpGo/e input file names
 num.spec <- num.args / 2
 spec.names <- args$args[1:num.spec]
@@ -374,7 +357,6 @@ for (i in 1:length(cpgoe.fnames)) {
     stop(paste("CpGo/e file name refers to a directory:", cpgoe.fnames[i]))
   }
 }
-
 
 
 # remove outliers and output histograms
