@@ -96,37 +96,6 @@ read.CpGoe <- function(fname, warn) {
 	v <- read.table(fname,  fill = TRUE, col.names = c("seq", "val"))
 	obs <- v$val
 
-	# v <- readLines(fname)
-	# lines <- c()
-	# obs <- c()
-	# if (length(v) > 0) {
-	# 	print("number of lines", str(length(v)))
-	# 	for (i in 1:length(v)) {
-	# 		if ( substr(v[i], 1, 1) != "#" ) {
-	# 			str <- gsub("^\\s+|\\s+$", "", v[i])   
-	# 			#vals <- strsplit(str, "\\s+")
-	# 			#print(vals, str(vals[2]), vals[length(vals)])
-	# 			val <- tail(strsplit(str,"\\s+")[[1]],1)
-	# 			if (grepl(",", val)) {
-	# 				stop( paste(fname, "contains commas, maybe using comma as decimal sign or as separator", val), call. = FALSE )
-	# 			}
-	# 			if (grepl("[^0123456789,+\\.eE]", val)) {
-	# 				stop( paste(fname, "contains illegal characters:", str), call. = FALSE )
-	# 			}
-	# 			obs <- c(obs, val)
-	# 		}
-	# 		if (i %% 1000 == 0) {
-	# 			print (str(i))
-	# 		}
-	# 	}
-	# }
-
-	# # are there enough values?
-	# if (length(obs) < 3) {
-	# 	stop( paste("Too few values could be read from", fname, "(less than 3), probably the file contains less than three CpGo/e values or", 
-	# 				"the CpGo/e ratios have not been put on separate lines"), call. = FALSE )
-	# } 
-
 	obs <- obs[!is.na(obs)]
 	return(obs)
 }
@@ -428,14 +397,6 @@ for (i in 1:num.spec) {
 	  col = grey(0.9), border = grey(0.6))
   mtext(paste(spec.names[i]), side = 3, adj = 0)
 
-  if (FALSE) {
-  # ... histogram 2: mean / sd based
-  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
-      sub = "Cleaned data, mean +- k*sd, k=2,...,4", prob = TRUE,
-	  col = grey(0.9), border = grey(0.6))
-  abline(v = mu.obs, col = 'blue', lwd = 2)
-  abline(v = c(ll.mu, ul.mu), col = "red")
-  }
 
   # ... histogram 3: median / iqr based
   t.lty <- rep(3, 4)
