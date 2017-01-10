@@ -77,6 +77,7 @@ proc.outliers <- function(obs, frac.outl) {
   
   if (any(v)) {
     excl.crit <- min(which(v))
+	ret[["obs.nz"]] <- obs
     ret[["obs.cl"]] <- obs[!(obs < ll.me[excl.crit] | ul.me[excl.crit] < obs)]
     ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit] 
   } else {
@@ -387,7 +388,7 @@ rownames(tab.des) <- spec.names
 t.height <- 6
 t.width <- 20
 pdf(outlier.hist.fname, height = t.height,width = t.width, paper = "special")
-par(mfrow = c(1, 4), mgp = c(2, 0.5, 0), mar = c(4.5, 3.5, 1.0, 1))
+par(mfrow = c(1, 3), mgp = c(2, 0.5, 0), mar = c(4.0, 3.0, 1.5, 1))
 tmp.fnames <- c()
 
 # ... iterate through species
@@ -433,33 +434,43 @@ for (i in 1:num.spec) {
   tab.des[i, "prop.out.4iqr"] <- l[["prop4"]] 
   tab.des[i, "prop.out.5iqr"] <- l[["prop5"]] 
   obs.cl <- l[["obs.cl"]]
+  obs.nz <- l[["obs.nz"]]
   tab.des[i, "used"] <- l[["used"]]
-  
+  usedindex <- substr(l[["used"]],1,1)
   # Histograms
   # ... histogram 1: original data with zeros
   t.breaks <- seq(0, max(obs.org) + 1, by = 0.03)
   t.xlim <- c(0, ul.me["5"] + 0.1)
   hist(obs.org, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
-      sub = "Original data", prob = TRUE)
+      sub = "Original data", prob = TRUE,
+	  col = grey(0.9), border = grey(0.6))
   mtext(paste(spec.names[i]), side = 3, adj = 0)
 
+  if (FALSE) {
   # ... histogram 2: mean / sd based
   hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
-      sub = "Cleaned data, mean +- k*sd, k=2,...,5", prob = TRUE)
-  abline(v = mu.obs, col = 'red', lwd = 2)
+      sub = "Cleaned data, mean +- k*sd, k=2,...,4", prob = TRUE,
+	  col = grey(0.9), border = grey(0.6))
+  abline(v = mu.obs, col = 'blue', lwd = 2)
   abline(v = c(ll.mu, ul.mu), col = "red")
+  }
 
   # ... histogram 3: median / iqr based
-  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
-      sub = "Cleaned data, Q1/3 +- k*IQR, k=2,...,5", prob = TRUE)
-  abline(v = me.obs, col = 'red', lwd = 2)
-  abline(v = c(ll.me, ul.me), col = "red")
+  t.lty <- rep(3, 4)
+  print(usedindex)
+  t.lty[usedindex] <- 1
+  hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
+      sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,4", prob = TRUE,
+	  col = grey(0.9), border = grey(0.6))
+  abline(v = me.obs, col = 'blue', lwd = 2)
+  abline(v = c(ll.me, ul.me), col = "red", lty = rep(t.lty, 2))
 
   # ... histogram 4: cleaned data
   hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
-      sub = "Cleaned data", prob = TRUE)
-  abline(v = me.obs, col = 'red', lwd = 2)
-  abline(v = c(ll.me, ul.me), col = "red")
+      sub = "Cleaned data", prob = TRUE,
+	  col = grey(0.9), border = grey(0.6))
+  abline(v = me.obs, col = 'blue', lwd = 2)
+  abline(v = c(ll.me[usedindex], ul.me[usedindex]), col = "red")
   
 }
 invisible(dev.off())
