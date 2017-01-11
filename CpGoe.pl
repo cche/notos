@@ -63,7 +63,12 @@ getopts('f:o:m:a:dvh', \%opts);
 #               "Moreover, the options must be listed first, then the name of the input FASTA file.\n";
 #  exit 1;
 #}
-my $fasta_fname = $opts{'f'};
+my $fasta_fname;
+if (exists($opts{'f'})) {
+  $fasta_fname = $opts{'f'};
+} else {
+  HELP_MESSAGE
+}
 
 # ... read options
 my $out_fname;
