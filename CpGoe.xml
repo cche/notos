@@ -6,7 +6,7 @@
         <exit_code range="1:" />
     </stdio>
     <command><![CDATA[
-		perl ${__tool_directory__}/CpGoe.pl -f $fastafile -o $outfile -m $minlength
+		perl ${__tool_directory__}/CpGoe.pl -f $fastafile -a $algo -o $outfile -m $minlength
     ]]></command>
     <inputs>
 		<param name="fastafile" type="data" format="fasta" />
@@ -27,13 +27,16 @@
 		</test>
 	</tests>
     <help><![CDATA[
-	CpGoe.pl -f fasta-file -o output_file -m minlength
+	CpGoe.pl -f fasta-file -a algo -o output_file -m minlength
 	
 	Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence.
-	The algorithms available are the following:
+
+	The algorithms available for -a are the following::
+
 	    1 - (CpG / (C * G)) * (L^2 / L-1)
 		2 - (CpG / L) / (G + C)^2
         3 - (CpG / (CG * TG))
+		
 	Where L represents the length of the sequende, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
     ]]></help>
     <citations>
