@@ -10,6 +10,11 @@
     ]]></command>
     <inputs>
 		<param name="fastafile" type="data" format="fasta" />
+		<param name="algo" type="select" label="Select algorithm to calculate the CpGo/e ratio" >
+			<option value="1">(CpG / (C * G)) * (L^2 / L-1)</option>
+			<option value="2">(CpG / L) / (G + C)^2</option>
+			<option value="3">(CpG / (CG * TG))</option>  
+		</param>
 		<param name="minlength" type="integer" value="200" help="Minimum length of the sequence to calculate CpGo/e ratio" />
     </inputs>
     <outputs>
@@ -24,7 +29,12 @@
     <help><![CDATA[
 	CpGoe.pl -f fasta-file -o output_file -m minlength
 	
-	Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence
+	Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence.
+	The algorithms available are the following:
+	    1 - (CpG / (C * G)) * (L^2 / L-1)
+		2 - (CpG / L) / (G + C)^2
+        3 - (CpG / (CG * TG))
+	Where L represents the length of the sequende, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
     ]]></help>
     <citations>
         <citation>
