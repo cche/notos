@@ -399,7 +399,6 @@ for (i in 1:num.spec) {
 
   # ... histogram 3: median / iqr based
   t.lty <- rep(3, 4)
-  print(usedindex)
   t.lty[usedindex] <- 1
   hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
       sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,4", prob = TRUE,
