@@ -16,7 +16,7 @@ require(optparse, quietly = TRUE)
 cmdArgs <- commandArgs(trailingOnly = FALSE)
 str <- "--file="
 match <- grep(str, cmdArgs)
-if (length(match) == 0) { 
+if (length(match) == 0) {
   stop("notos.r not set up to be called from R console")
 }
 path <- normalizePath( sub(str, "", cmdArgs[match]) )
@@ -31,21 +31,21 @@ MAX.CPGOE <- 10   # maximum value for CpGo/e ratios
 # process outliers and return quantities characterizing the distribution
 # obs: CpGo/e ratios
 proc.outliers <- function(obs, frac.outl) {
-  ret <- list() 
-  
-  # remove all zeros from sample 
-  no.obs.raw <- length(obs) 
+  ret <- list()
+
+  # remove all zeros from sample
+  no.obs.raw <- length(obs)
   ret[["prop.zero"]] <- sum(obs == 0) / no.obs.raw
   obs <- obs[obs != 0]
   if (length(obs) < 3) {
     ret[["valid"]] <- FALSE
     return(ret)
   }
-  
+
   # replace very large values by a maximum value
   obs <- sapply(obs, function(x) min(x, MAX.CPGOE))
-  
-  # defining variables 
+
+  # defining variables
   # ... mean, median and standard deviation
   ret[["mu.obs"]] <- mu.obs <- mean(obs)
   ret[["me.obs"]] <- me.obs <- median(obs)
@@ -63,8 +63,8 @@ proc.outliers <- function(obs, frac.outl) {
   ret[["ll.mu"]] <- ll.mu
   ret[["ul.me"]] <- ul.me
   ret[["ll.me"]] <- ll.me
-  
-  # summary statistics and data output   
+
+  # summary statistics and data output
   # ... calculate proportion of data excluded when using different ranges
   ret[["prop2"]] <- prop2 <- length(obs[obs < ll.me["2"] | ul.me["2"] < obs]) / no.obs.raw
   ret[["prop3"]] <- prop3 <- length(obs[obs < ll.me["3"] | ul.me["3"] < obs]) / no.obs.raw
@@ -72,17 +72,16 @@ proc.outliers <- function(obs, frac.outl) {
   ret[["prop5"]] <- prop5 <- length(obs[obs < ll.me["5"] | ul.me["5"] < obs]) / no.obs.raw
   # ... choose k in Q1 / Q3 +- k * IQR such that no more than 1% of the data are excluded
   v <- c(prop2, prop3, prop4, prop5) < frac.outl
-  
+
   if (any(v)) {
     excl.crit <- min(which(v))
 	ret[["obs.nz"]] <- obs
     ret[["obs.cl"]] <- obs[!(obs < ll.me[excl.crit] | ul.me[excl.crit] < obs)]
-    ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit] 
+    ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit]
   } else {
     ret[["obs.cl"]] <- obs
-    ret[["used"]] <- "too few values" 
+    ret[["used"]] <- "too few values"
   }
-  
   ret[["valid"]] <- TRUE
   return(ret)
 }
@@ -108,38 +107,38 @@ read.CpGoe <- function(fname, warn) {
 # ... parse arguments
 option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default = 0.01,
                                 help = "maximum fraction of CpGo/e ratios excluded as outliers [default %default]"),
-                    make_option(c("-d", "--min-dist"), type = "double", default = 0.2, 
+                    make_option(c("-d", "--min-dist"), type = "double", default = 0.2,
                                 help = "minimum distance between modes, modes that are closer are joined [default %default]"),
-                    make_option(c("-c", "--conf-level"), type = "double", default = 0.95, 
+                    make_option(c("-c", "--conf-level"), type = "double", default = 0.95,
                                 help = "level of the confidence intervals of the mode positions [default %default]"),
-                    make_option(c("-m", "--mode-mass"), type = "double", default = 0.05, 
+                    make_option(c("-m", "--mode-mass"), type = "double", default = 0.05,
                                 help = "minimum probability mass of a mode [default %default]"),
-                    make_option(c("-b", "--band-width"), type = "double", default = 1.06, 
+                    make_option(c("-b", "--band-width"), type = "double", default = 1.06,
                                 help = "bandwidth constant for kernels [default %default]"),
-                    make_option(c("-B", "--bootstrap"), action="store_true", default = FALSE, 
+                    make_option(c("-B", "--bootstrap"), action="store_true", default = FALSE,
                                 help = "calculate confidence intervals of mode positions using bootstrap [default %default]"),
-                    make_option(c("-r", "--bootstrap-reps"), type = "integer", default = 1500, 
+                    make_option(c("-r", "--bootstrap-reps"), type = "integer", default = 1500,
                                 help = "number of bootstrap repetitions [default %default]"),
-                    make_option(c("-H", "--outlier-hist-file"), type = "character", default = "outliers_hist.pdf", 
+                    make_option(c("-H", "--outlier-hist-file"), type = "character", default = "outliers_hist.pdf",
                                 help = "name of the output file for the outlier histograms [default %default]"),
-                    make_option(c("-C", "--cutoff-file"), type = "character", default = "outliers_cutoff.csv", 
+                    make_option(c("-C", "--cutoff-file"), type = "character", default = "outliers_cutoff.csv",
                                 help = "name of the output file for the outlier cutoff [default %default]"),
-                    make_option(c("-k", "--kde-file"), type = "character", default = "KDE.pdf", 
+                    make_option(c("-k", "--kde-file"), type = "character", default = "KDE.pdf",
                                 help = "name of the output file for the KDE [default %default]"),
-                    make_option(c("-p", "--peak-file"), type = "character", default = "peaks.csv", 
+                    make_option(c("-p", "--peak-file"), type = "character", default = "peaks.csv",
                                 help = "name of the output file describing the peaks of the KDE [default %default]"),
-                    make_option(c("-s", "--bootstrap-file"), type = "character", default = "bootstrap.csv", 
+                    make_option(c("-s", "--bootstrap-file"), type = "character", default = "bootstrap.csv",
                                 help = "name of the output file for the bootstrap results [default %default]"),
-                    make_option(c("-f", "--no-warning-few-seqs"), action = "store_true", default = FALSE, 
+                    make_option(c("-f", "--no-warning-few-seqs"), action = "store_true", default = FALSE,
                                 help = paste("suppress warning in case the input file only contains few values ",
                                              "[default %default]", sep = ""))
-                   )                                      
-op <- OptionParser(usage = "notos.r [options] spc_name_1 ... spc_name_N CpGoe_file_name_1 ... CpGoe_file_name_N", 
+
+op <- OptionParser(usage = "notos.r [options] spc_name_1 ... spc_name_N CpGoe_file_name_1 ... CpGoe_file_name_N",
                    description = paste("\nDescription: Notos generates a histogram and a kernel density estimator from files containing CpGo/e ratios. ",
                                        "Moreover, it determines the number of modes of the CpGo/e ratio for each input file. The input files ",
                                        "can either be composed of \n",
-                                       "1) CpGo/e ratios separated by linebreaks or\n", 
-                                       "2) sequence names and CpGo/e ratios with each sequence name put on a separate line together with its CpGo/e ratio ", 
+                                       "1) CpGo/e ratios separated by linebreaks or\n",
+                                       "2) sequence names and CpGo/e ratios with each sequence name put on a separate line together with its CpGo/e ratio ",
                                        "and sequence and CpGo/e being separated by whitespaces on each line.", sep = ""),
                    option_list = option_list)
 args <- parse_args(op, positional_arguments = c(2, Inf))
@@ -356,14 +355,14 @@ for (i in 1:num.spec) {
     if (!is.finite(val)) {
       stop(paste(err.str, "could not be converted to a number:", obs[j]))
     }
-  
+
     # is ratio too small / large?
     if (val < 0) {
       stop(paste(err.str, "is negative:", val))
     } else {
       if (val > MAX.CPGOE) {
         warning(paste(err.str   , "is suspiciously large:", val, "\nthis value is replaced by", MAX.CPGOE))
-      }    
+      }
     }
   }
 
@@ -377,13 +376,13 @@ for (i in 1:num.spec) {
   mu.obs <- l[["mu.obs"]]
   me.obs <- l[["me.obs"]]
   ul.mu <- l[["ul.mu"]]
-  ll.mu <- l[["ll.mu"]] 
-  ul.me <- l[["ul.me"]] 
-  ll.me <- l[["ll.me"]] 
-  tab.des[i, "prop.out.2iqr"] <- l[["prop2"]] 
+  ll.mu <- l[["ll.mu"]]
+  ul.me <- l[["ul.me"]]
+  ll.me <- l[["ll.me"]]
+  tab.des[i, "prop.out.2iqr"] <- l[["prop2"]]
   tab.des[i, "prop.out.3iqr"] <- l[["prop3"]]
-  tab.des[i, "prop.out.4iqr"] <- l[["prop4"]] 
-  tab.des[i, "prop.out.5iqr"] <- l[["prop5"]] 
+  tab.des[i, "prop.out.4iqr"] <- l[["prop4"]]
+  tab.des[i, "prop.out.5iqr"] <- l[["prop5"]]
   obs.cl <- l[["obs.cl"]]
   obs.nz <- l[["obs.nz"]]
   tab.des[i, "used"] <- l[["used"]]
@@ -402,19 +401,18 @@ for (i in 1:num.spec) {
   t.lty <- rep(3, 4)
   print(usedindex)
   t.lty[usedindex] <- 1
-  hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
+  hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
       sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,4", prob = TRUE,
 	  col = grey(0.9), border = grey(0.6))
   abline(v = me.obs, col = 'blue', lwd = 2)
   abline(v = c(ll.me, ul.me), col = "red", lty = rep(t.lty, 2))
 
   # ... histogram 4: cleaned data
-  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "", 
+  hist(obs.cl, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
       sub = "Cleaned data", prob = TRUE,
 	  col = grey(0.9), border = grey(0.6))
   abline(v = me.obs, col = 'blue', lwd = 2)
   abline(v = c(ll.me[usedindex], ul.me[usedindex]), col = "red")
-  
 }
 invisible(dev.off())
 
@@ -443,29 +441,29 @@ for (i in 1:num.spec) {
   obs <- read.CpGoe(cpgoe.fnames[i], FALSE)
   l <- proc.outliers(obs, frac.outl)
   obs.cl <- l[["obs.cl"]]
-  
+
   # check number of values
   fname <- cpgoe.fnames[i]
   if (length(obs.cl) < 3) {
     stop( paste("Too few values in", fname, "(less than 3) after removal of outliers and zeros"), call. = FALSE )
-  } 
+  }
   if (!supp.warn.few & length(obs.cl) < 250) {
     warning( paste(fname, " contains only few values (", length(obs.cl), ") after removal of outliers and zeros, which may lead to unreliable results", sep = ""), call. = FALSE )
   }
-  
+
   # plotting
-  l <- plot.KDE(obs.cl, t.name = spec.names[i], bs.cis = use.bstrp, bstrp.reps = bstrp.reps, conf.lev = conf.lev, 
+  l <- plot.KDE(obs.cl, t.name = spec.names[i], bs.cis = use.bstrp, bstrp.reps = bstrp.reps, conf.lev = conf.lev,
                 min.dist = min.dist, mode.mass = mode.mass, band.width = band.width)
   tab1.m[i, ] <- l$tab.des
   if (use.bstrp) {
     tab2.m[i, ] <- l$tab.bs
   }
-} 
+}
 invisible(dev.off())
 #sessionInfo()
 
 # ... output quantities in tables
-write.table(tab1.m, file = peak.fname, sep = "\t", col.names=NA)  
+write.table(tab1.m, file = peak.fname, sep = "\t", col.names=NA)
 if (use.bstrp) {
     write.table(tab2.m, file = bstrp.fname, sep = "\t", col.names=NA)
 }
