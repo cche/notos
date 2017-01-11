@@ -131,7 +131,7 @@ option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default
                                 help = "name of the output file for the bootstrap results [default %default]"),
                     make_option(c("-f", "--no-warning-few-seqs"), action = "store_true", default = FALSE,
                                 help = paste("suppress warning in case the input file only contains few values ",
-                                             "[default %default]", sep = ""))
+                                             "[default %default]", sep = "")))
 
 op <- OptionParser(usage = "notos.r [options] spc_name_1 ... spc_name_N CpGoe_file_name_1 ... CpGoe_file_name_N",
                    description = paste("\nDescription: Notos generates a histogram and a kernel density estimator from files containing CpGo/e ratios. ",
