@@ -301,7 +301,7 @@ for my $i (0 .. $#names) {
     my $num_GC = () = ( $seqs[$i] =~ m/GC/gi );
 	my $num_TG = () = ( $seqs[$i] =~ m/TG/gi );
     my $CpGoe;
-    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) ) {
+    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) || ($num_CG == 0) ) {
       $CpGoe = 0;
     }
     else {
