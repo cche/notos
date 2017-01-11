@@ -24,23 +24,18 @@ $Getopt::Std::STANDARD_HELP_VERSION = 1;
 sub HELP_MESSAGE
 {
   print "Description: CpGoe processes a FASTA file and outputs the CpGo/e ratios and - if specified - further quantities\n\n" .
-        "Usage: CpGoe.pl [OPTION] [FASTA_FILE] \n\n" .
+        "Usage: CpGoe.pl [OPTION] -f FASTA_FILE \n\n" .
         "Options:\n" .
-        "-o OUT_FILE\n" .
-        "      name of output file containing the results\n" .
-        "-m MIN_LEN\n" .
-        "      minimum length of sequences, shorter sequences are discarded\n" .
-        "-a ALGORITHM\n" .
-        "      Algorithm used to calculate CpGo/e ratio. Default: 1\n" .
-		"           1 - (CpG / (C * G)) * (L^2 / L-1)" .
-		"           2 - (CpG / L) / (G + C)^2" .
-		"           3 - (CpG / (CG * TG))" .
-        "-d\n" .
-        "      detailed output, providing other quantities additional to the CpGo/e ratios\n" .
-        "-h\n" .
-        "      output header line\n";
-        "-v\n" .
-        "      verbose messages\n" .
+        "    -f FASTA_FILE   Name of FASTA file containing the input sequences. REQUIRED.\n" .
+        "    -o OUT_FILE     name of output file containing the results\n" .
+        "    -m MIN_LEN      minimum length of sequences, shorter sequences are discarded\n" .
+        "    -a ALGORITHM    Algorithm used to calculate CpGo/e ratio. Default: 1\n" .
+		"                         1 - (CpG / (C * G)) * (L^2 / L-1)\n" .
+		"                         2 - (CpG / L) / (G + C)^2\n" .
+		"                         3 - (CpG / (CG * TG))\n" .
+        "    -d              detailed output, providing other quantities additional to the CpGo/e ratios\n" .
+        "    -h              output header line\n".
+        "    -v              verbose messages\n" ;
   exit 0;
 }
 
