@@ -24,18 +24,18 @@ $Getopt::Std::STANDARD_HELP_VERSION = 1;
 sub HELP_MESSAGE
 {
   print "Description: CpGoe processes a FASTA file and outputs the CpGo/e ratios and - if specified - further quantities\n\n" .
-        "Usage: CpGoe.pl [OPTION] [FASTA_FILE] \n\n" .
+        "Usage: CpGoe.pl [OPTION] -f FASTA_FILE \n\n" .
         "Options:\n" .
-        "-o OUT_FILE\n" .
-        "      name of output file containing the results\n" .
-        "-m MIN_LEN\n" .
-        "      minimum length of sequences, shorter sequences are discarded\n" .
-        "-d\n" .
-        "      detailed output, providing other quantities additional to the CpGo/e ratios\n" .
-        "-h\n" .
-        "      output header line\n";
-        "-v\n" .
-        "      verbose messages\n" .
+        "    -f FASTA_FILE   Name of FASTA file containing the input sequences. REQUIRED.\n" .
+        "    -o OUT_FILE     name of output file containing the results\n" .
+        "    -m MIN_LEN      minimum length of sequences, shorter sequences are discarded\n" .
+        "    -a ALGORITHM    Algorithm used to calculate CpGo/e ratio. Default: 1\n" .
+		"                         1 - (CpG / (C * G)) * (L^2 / L-1)\n" .
+		"                         2 - (CpG / L) / (G + C)^2\n" .
+		"                         3 - (CpG / (CG * TG))\n" .
+        "    -d              detailed output, providing other quantities additional to the CpGo/e ratios\n" .
+        "    -h              output header line\n".
+        "    -v              verbose messages\n" ;
   exit 0;
 }
 
@@ -52,13 +52,18 @@ sub VERSION_MESSAGE
 # Command line parsing
 # ... read argument
 my %opts;
-getopts('f:o:m:dvh', \%opts);
+getopts('f:o:m:a:dvh', \%opts);
 #if ($#ARGV != 0) {
 #  print STDERR "Exactly one argument has to be provided, the name of the input FASTA file.\n" .
 #               "Moreover, the options must be listed first, then the name of the input FASTA file.\n";
 #  exit 1;
 #}
-my $fasta_fname = $opts{'f'};
+my $fasta_fname;
+if (exists($opts{'f'})) {
+  $fasta_fname = $opts{'f'};
+} else {
+  HELP_MESSAGE
+}
 
 # ... read options
 my $out_fname;
@@ -77,6 +82,11 @@ if (exists($opts{'m'})) {
 }
 else {
   $min_len = 1;
+}
+
+my $algo = 1;
+if (exists($opts{'a'})) {
+  $algo = $opts{'a'}
 }
 
 my $is_verbose = exists($opts{'v'});
@@ -289,18 +299,29 @@ for my $i (0 .. $#names) {
     my $num_C = () = ( $seqs[$i] =~ m/C/gi );
     my $num_CG = () = ( $seqs[$i] =~ m/CG/gi );
     my $num_GC = () = ( $seqs[$i] =~ m/GC/gi );
+	my $num_TG = () = ( $seqs[$i] =~ m/TG/gi );
     my $CpGoe;
-    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) ) {
+    if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) || ($num_CG == 0) ) {
       $CpGoe = 0;
     }
     else {
-      my $x = $num_CG / ($num_C * $num_G);
-      my $y = $l**2 / ($l - 1);
-      $CpGoe = $x * $y;
+	  if ($algo == 1) {
+        my $x = $num_CG / ($num_C * $num_G);
+        my $y = $l**2 / ($l - 1);
+        $CpGoe = $x * $y;
+      } elsif ($algo == 2) {
+		$CpGoe = ($num_CG / $l)/($num_C + $num_G)**2;
+	  } elsif ($algo == 3) {
+		$CpGoe = $num_CG / ($num_CG + $num_TG);
+	  }
     }
     print $OUT $names[$i] . "\t";
     if ($is_detailed) {
-      print $OUT $len . "\t" . $num_CG . "\t" . $num_GC . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
+      if ($algo == 3) {
+		print $OUT $len . "\t" . $num_CG . "\t" . $num_TG . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
+	  } else {
+		print $OUT $len . "\t" . $num_CG . "\t" . $num_GC . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
+	  }
     }
     print $OUT $CpGoe . "\n";
   } else {
