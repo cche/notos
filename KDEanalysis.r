@@ -79,6 +79,7 @@ proc.outliers <- function(obs, frac.outl) {
     ret[["obs.cl"]] <- obs[!(obs < ll.me[excl.crit] | ul.me[excl.crit] < obs)]
     ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit]
   } else {
+	ret[["obs.nz"]] <- obs
     ret[["obs.cl"]] <- obs
     ret[["used"]] <- "too few values"
   }
@@ -400,6 +401,7 @@ for (i in 1:num.spec) {
   # ... histogram 3: median / iqr based
   t.lty <- rep(3, 4)
   t.lty[usedindex] <- 1
+
   hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
       sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,4", prob = TRUE,
 	  col = grey(0.9), border = grey(0.6))
