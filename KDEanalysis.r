@@ -41,6 +41,7 @@ proc.outliers <- function(obs, frac.outl) {
     ret[["valid"]] <- FALSE
     return(ret)
   }
+  ret[["obs.nz"]] <- obs
 
   # replace very large values by a maximum value
   obs <- sapply(obs, function(x) min(x, MAX.CPGOE))
@@ -75,11 +76,9 @@ proc.outliers <- function(obs, frac.outl) {
 
   if (any(v)) {
     excl.crit <- min(which(v))
-	ret[["obs.nz"]] <- obs
     ret[["obs.cl"]] <- obs[!(obs < ll.me[excl.crit] | ul.me[excl.crit] < obs)]
     ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit]
   } else {
-	ret[["obs.nz"]] <- obs
     ret[["obs.cl"]] <- obs
     ret[["used"]] <- "too few values"
   }
@@ -161,8 +160,8 @@ if (num.args %% 2 != 0) {
 
 # ... ... check maximum fraction of CpGo/e ratios excluded as outliers
 frac.outl <- args$options$`frac-outl`
-if ((frac.outl < 0) || (frac.outl >= 1)) {
-   stop("The maximum fraction of CpGo/e ratios excluded as outliers has to be greater or equal to zero and less than one")
+if ((frac.outl <= 0) || (frac.outl >= 1)) {
+   stop("The maximum fraction of CpGo/e ratios excluded as outliers has to be greater than zero and less than one")
 }
 if (frac.outl >= 0.2) {
    warning("The maximum fraction of CpGo/e ratios excluded as outliers has been set to a rather large value, resulting in the removal of many CpGo/e ratios")
