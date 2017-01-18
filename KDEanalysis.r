@@ -129,6 +129,8 @@ option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default
                                 help = "name of the output file describing the peaks of the KDE [default %default]"),
                     make_option(c("-s", "--bootstrap-file"), type = "character", default = "bootstrap.csv",
                                 help = "name of the output file for the bootstrap results [default %default]"),
+                    make_option(c("-u", "--summary-file"), type = "character", default = "summary.csv",
+                                help = "name of the summary file for the KDE results [default %default]"),
                     make_option(c("-f", "--no-warning-few-seqs"), action = "store_true", default = FALSE,
                                 help = paste("suppress warning in case the input file only contains few values ",
                                              "[default %default]", sep = "")))
@@ -312,6 +314,24 @@ if (as.vector(g)[1] != -1) {
   }
 }
 
+# ... ... check summary results output file name
+summ.fname <- args$options$`summary-file`
+if ( file.exists(summ.fname) && (file.info(summ.fname)$isdir) ) {
+  stop(paste("File name for the bootstrap results refers to a directory:", summ.fname))
+}
+v <- strsplit(summ.fname, split = ".", fixed = TRUE)[[1]]
+if ((length(v) == 1) || (v[ length(v) ] != "csv")) {
+  warning(paste("File name for the bootstrap results does not have a .csv extension:", summ.fname))
+}
+g <- gregexpr(pattern ='/', summ.fname)[[1]]
+if (as.vector(g)[1] != -1) {
+  v <- as.vector(g)
+  d <- substr(summ.fname, 1, v[length(v)])
+  if (!file.exists(d)) {
+    stop(paste("Path to file for the bootstrap results is not valid:", summ.fname))
+  }
+}
+
 
 # ... ... check CpGo/e input file names
 num.spec <- num.args / 2
@@ -344,8 +364,8 @@ tmp.fnames <- c()
 # ... iterate through species
 for (i in 1:num.spec) {
   fname <- cpgoe.fnames[i]
-
   obs <- read.CpGoe(fname, TRUE)
+
 
   # check CpGo/e ratios
   for (j in 1:length(obs)) {
@@ -431,6 +451,10 @@ tab2.m <- data.frame(matrix(NA, nrow = num.spec, ncol = 7))
 names(tab2.m) <- col.names.bs()
 rownames(tab2.m) <- spec.names
 
+# summary table
+sum1.m <-  data.frame(matrix(NA, nrow = num.spec, ncol = 13)) 
+names(sum1.m) <- c("Modes", "Skewness", "Variance", "Modes too close", "Peak1", "Peak2", "Peak3", "Peak4", "Peak5", "Peak6", "Peak7", "Peak8", "Peak9")
+rownames(sum1.m) <- spec.names
 
 # ... plotting
 t.height <- 6
@@ -455,6 +479,7 @@ for (i in 1:num.spec) {
   l <- plot.KDE(obs.cl, t.name = spec.names[i], bs.cis = use.bstrp, bstrp.reps = bstrp.reps, conf.lev = conf.lev,
                 min.dist = min.dist, mode.mass = mode.mass, band.width = band.width)
   tab1.m[i, ] <- l$tab.des
+  sum1.m[i, ] <- l$tab.des[c(1, 4, 33, 30, 10+(2*0:8))]
   if (use.bstrp) {
     tab2.m[i, ] <- l$tab.bs
   }
@@ -463,6 +488,7 @@ invisible(dev.off())
 #sessionInfo()
 
 # ... output quantities in tables
+write.table(sum1.m, file = summ.fname, sep = "\t", col.names = NA)
 write.table(tab1.m, file = peak.fname, sep = "\t", col.names=NA)
 if (use.bstrp) {
     write.table(tab2.m, file = bstrp.fname, sep = "\t", col.names=NA)
