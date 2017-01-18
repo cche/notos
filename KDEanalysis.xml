@@ -36,7 +36,7 @@
 			<param name="nofew" type="boolean" truevalue="TRUE" falsevalue="FALSE" help="Do not print warning message when few datapoint are given." label= "Supress few datapoint warning" />
 		</inputs>
 		<outputs>
-			<data name="summary" format="tabular" from_work_dir="summary.csv" label="Peaks on ${on_string}" />
+			<data name="summary" format="tabular" from_work_dir="summary.csv" label="Summary on ${on_string}" />
 			<data name="outlierHist" format="pdf" from_work_dir="outliers_hist.pdf" label="Outlier Histogram on ${on_string}"/>
 			<data name="cutoff" format="tabular" from_work_dir="outliers_cutoff.csv" label="Outlier cutoff on ${on_string}" />
 			<data name="peaks" format="tabular" from_work_dir="peaks.csv" label="Peaks on ${on_string}" />
