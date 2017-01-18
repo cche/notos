@@ -166,9 +166,9 @@ while ( <$FASTA> ) {
   chomp;
   if (/^[^#]/) {
     if ( /^>(\S+)/) {
-      s/^>|\s+$//g;   # remove leading '>' and trailing whitespaces
-      s/\s/_/g;   # replace spaces by underscores
-      push(@names, $_);
+	  #s/^>|\s+$//g;   # remove leading '>' and trailing whitespaces
+	  #s/\s/_/g;   # replace spaces by underscores
+      push(@names, $1);
       push(@seqs, "");
       $is_first = 0;
     }
