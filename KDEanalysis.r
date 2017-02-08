@@ -79,8 +79,8 @@ proc.outliers <- function(obs, frac.outl) {
     ret[["obs.cl"]] <- obs[!(obs < ll.me[excl.crit] | ul.me[excl.crit] < obs)]
     ret[["used"]] <- paste(2 : 5, "iqr", sep = "")[excl.crit]
   } else {
-    ret[["obs.cl"]] <- obs
-    ret[["used"]] <- "too few values"
+    ret[["obs.cl"]] <- obs[!(obs < ll.me[4] | ul.me[4] < obs)]
+    ret[["used"]] <- "limited to 5 * iqr"
   }
   ret[["valid"]] <- TRUE
   return(ret)
@@ -92,6 +92,7 @@ proc.outliers <- function(obs, frac.outl) {
 read.CpGoe <- function(fname, warn) {
 	# read input file line by line, split by whitespaces, assign last substring to CpGo/e ratios
 	# ... remove comments and trailing whitespaces
+	print(fname)
 	v <- read.table(fname,  fill = TRUE, col.names = c("seq", "val"))
 	obs <- v$val
 
@@ -406,6 +407,9 @@ for (i in 1:num.spec) {
   obs.cl <- l[["obs.cl"]]
   obs.nz <- l[["obs.nz"]]
   tab.des[i, "used"] <- l[["used"]]
+  tab.des[i, "no.obs.raw"] <- length(obs.org)
+  tab.des[i, "no.obs.nozero"] <- length(obs.nz)
+  tab.des[i, "no.obs.clean"] <- length(obs.cl)
   usedindex <- substr(l[["used"]],1,1)
   # Histograms
   # ... histogram 1: original data with zeros
