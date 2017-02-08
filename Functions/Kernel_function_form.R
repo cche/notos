@@ -157,7 +157,8 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
   t.breaks <- seq(0, max(obs) + 1, by = 0.03)
   hist_data <- hist(obs, breaks = t.breaks, plot = FALSE)
   hist(obs, breaks = t.breaks, prob = TRUE, main = t.name,
-       sub = paste("Gaussian kernel with band width", band.width),
+       # sub = paste("Gaussian kernel with band width", band.width),
+	   sub = "CpGo/e Ratio",
        col = grey(0.9), border = grey(0.6))
   if (!is.null(t.sub)) {
     mtext(t.sub)
