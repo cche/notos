@@ -154,7 +154,8 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
   # part 4: plots
   # -------------
     
-  t.breaks <- seq(0, max(obs) + 1, by = 0.03)
+  #t.breaks <- seq(0, max(obs)*1.05, by = 0.03)
+  t.breaks = 50
   hist_data <- hist(obs, breaks = t.breaks, plot = FALSE)
   hist(obs, breaks = t.breaks, prob = TRUE, main = t.name,
        # sub = paste("Gaussian kernel with band width", band.width),
