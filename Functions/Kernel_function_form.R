@@ -160,7 +160,7 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
   hist(obs, breaks = t.breaks, prob = TRUE, main = t.name,
        # sub = paste("Gaussian kernel with band width", band.width),
 	   sub = "CpGo/e Ratio",
-       col = grey(0.9), border = grey(0.6))
+       col = grey(0.9), border = grey(0.6)) #, xlim = c(-0.05, max(obs)*1.1))
   if (!is.null(t.sub)) {
     mtext(t.sub)
   }
@@ -202,7 +202,10 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
     abline(v = ker$x[p][close], col = "orange", lwd = 3, lty = p.lty) 
   }
   # valleys
-  abline(v = ker$x[v], col = "black", lwd = 1) 
+  if (length(x.pos)>1) {
+#	ker$x[v][c(-1, -length(ker$x[v]))]
+	  abline(v = ker$x[v][c(-1, -length(ker$x[v]))] , col = "black", lwd = 1) 
+  }
   
   # legend
   if(t.legend == TRUE) {
