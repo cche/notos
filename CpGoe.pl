@@ -31,8 +31,9 @@ sub HELP_MESSAGE
         "    -m MIN_LEN      minimum length of sequences, shorter sequences are discarded\n" .
         "    -a ALGORITHM    Algorithm used to calculate CpGo/e ratio. Default: 1\n" .
 		"                         1 - (CpG / (C * G)) * (L^2 / L-1)\n" .
-		"                         2 - (CpG / L) / (G + C)^2\n" .
-		"                         3 - (CpG / (CG * TG))\n" .
+		"                         2 - (CpG / (C * G)) * (L^2 / L)\n" .
+		"                         3 - (CpG / L) / (G + C)^2\n" .
+		"                         4 - CpG / ( (C + G)/2 )^2\n" .
         "    -d              detailed output, providing other quantities additional to the CpGo/e ratios\n" .
         "    -h              output header line\n".
         "    -v              verbose messages\n" ;
@@ -298,7 +299,7 @@ for my $i (0 .. $#names) {
     my $num_G = () = ( $seqs[$i] =~ m/G/gi );
     my $num_C = () = ( $seqs[$i] =~ m/C/gi );
     my $num_CG = () = ( $seqs[$i] =~ m/CG/gi );
-    my $num_GC = () = ( $seqs[$i] =~ m/GC/gi );
+    my $num_CA = () = ( $seqs[$i] =~ m/CA/gi );
 	my $num_TG = () = ( $seqs[$i] =~ m/TG/gi );
     my $CpGoe;
     if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) || ($num_CG == 0) ) {
@@ -310,11 +311,16 @@ for my $i (0 .. $#names) {
         my $y = $l**2 / ($l - 1);
         $CpGoe = $x * $y;
       } elsif ($algo == 2) {
-		$CpGoe = ($num_CG / $l)/($num_C + $num_G)**2;
-	  } elsif ($algo == 3) {
-		$CpGoe = $num_CG / ($num_CG + $num_TG);
+		# cf.Gardiner-Garden and Frommer
+		$CpGoe = ($num_CG/($num_C * $num_G))*$l;
+      } elsif ($algo == 3) {
+		# cf. Zeng and Yi
+		$CpGoe = ($num_CG / $l)/(($num_C + $num_G)/$l)**2;
+	  } elsif ($algo == 4) {
+		# cf. Saxonov, Berg and Brutlag
+		$CpGoe = $num_CG / (($num_C + $num_G)/2)**2;
 	  }
-    }
+	}
     print $OUT $names[$i] . "\t";
     if ($is_detailed) {
       if ($algo == 3) {
