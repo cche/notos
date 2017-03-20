@@ -6,14 +6,21 @@
         <exit_code range="1:" />
     </stdio>
     <command><![CDATA[
-		perl ${__tool_directory__}/CpGoe.pl -f $fastafile -a $algo -o $outfile -m $minlength
+		perl ${__tool_directory__}/CpGoe.pl -f $fastafile -a $algo -c $context -o $outfile -m $minlength
     ]]></command>
     <inputs>
 		<param name="fastafile" type="data" format="fasta" />
+		<param name="context" type="select" label="Select context to calculate the CpNo/e ratio" >
+			<option value="CpG" selected="selected">CpG</option>
+			<option value="CpA">CpA</option>
+			<option value="CpC">CpC</option>  
+			<option value="CpT">CpT</option>  
+		</param>
 		<param name="algo" type="select" label="Select algorithm to calculate the CpGo/e ratio" >
 			<option value="1">(CpG / (C * G)) * (L^2 / L-1)</option>
-			<option value="2">(CpG / L) / (G + C)^2</option>
-			<option value="3">(CpG / (CG * TG))</option>  
+			<option value="2">Gardiner-Garden and Frommer (CpG / (G + C))*L</option>
+			<option value="3">Zeng and Yi (CpG / L) / ((C + G)/L)^2</option>  
+			<option value="4">Saxonov, Berg and Brutlag CpG / ((C + G)/2)^2</option>  
 		</param>
 		<param name="minlength" type="integer" value="200" help="Minimum length of the sequence to calculate CpGo/e ratio" />
     </inputs>
@@ -27,17 +34,20 @@
 		</test>
 	</tests>
     <help><![CDATA[
-	CpGoe.pl -f fasta-file -a algo -o output_file -m minlength
+	CpGoe.pl -f fasta-file -a algo -c context -o output_file -m minlength
 	
 	Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence.
 
-	The algorithms available for -a are the following::
+	The available contexts (-c) are CpG, CpA, CpC, CpT. Default CpG. 
 
-	    1 - (CpG / (C * G)) * (L^2 / L-1)
-		2 - (CpG / L) / (G + C)^2
-        3 - (CpG / (CG * TG))
+	The algorithms (-a) available for -a are the following::
+
+		1 => (CpG / (C * G)) * (L^2 / L-1)
+		2 => (CpG / (C * G)) * L
+		3 => (CpG / L) / ((C + G) / L)^2
+		4 => (CpG / (C + G)/2)^2
 		
-	Where L represents the length of the sequende, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
+	Where L represents the length of the sequence, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
     ]]></help>
     <citations>
         <citation>

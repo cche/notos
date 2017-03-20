@@ -29,6 +29,7 @@ sub HELP_MESSAGE
         "    -f FASTA_FILE   Name of FASTA file containing the input sequences. REQUIRED.\n" .
         "    -o OUT_FILE     name of output file containing the results\n" .
         "    -m MIN_LEN      minimum length of sequences, shorter sequences are discarded\n" .
+		"    -c CONTEXT		 Context to calculate the ratio (CpA, CpC, CpG, CpT) default CpG.\n" .
         "    -a ALGORITHM    Algorithm used to calculate CpGo/e ratio. Default: 1\n" .
 		"                         1 - (CpG / (C * G)) * (L^2 / L-1)\n" .
 		"                         2 - (CpG / (C * G)) * (L^2 / L)\n" .
@@ -53,7 +54,7 @@ sub VERSION_MESSAGE
 # Command line parsing
 # ... read argument
 my %opts;
-getopts('f:o:m:a:dvh', \%opts);
+getopts('f:o:m:c:a:dvh', \%opts);
 #if ($#ARGV != 0) {
 #  print STDERR "Exactly one argument has to be provided, the name of the input FASTA file.\n" .
 #               "Moreover, the options must be listed first, then the name of the input FASTA file.\n";
@@ -79,7 +80,7 @@ else {
 
 my $min_len;
 if (exists($opts{'m'})) {
-  $min_len = $opts{'m'}
+  $min_len = $opts{'m'};
 }
 else {
   $min_len = 1;
@@ -87,7 +88,12 @@ else {
 
 my $algo = 1;
 if (exists($opts{'a'})) {
-  $algo = $opts{'a'}
+  $algo = $opts{'a'};
+}
+
+my $context = 'CpG';
+if (exists($opts{'c'})) {
+  $context = $opts{'c'};
 }
 
 my $is_verbose = exists($opts{'v'});
@@ -296,10 +302,24 @@ for my $i (0 .. $#names) {
   my $len = length($seqs[$i]);
   my $l = $len - $num_N;
   if ($l >= $min_len) {
-    my $num_G = () = ( $seqs[$i] =~ m/G/gi );
+	  my ($num_G, $num_CG);
+	if ($context eq 'CpG') {
+		$num_G = () = ( $seqs[$i] =~ m/G/gi );
+		$num_CG = () = ( $seqs[$i] =~ m/CG/gi );
+	} elsif ($context eq 'CpA') {
+		$num_G = () = ( $seqs[$i] =~ m/A/gi );
+		$num_CG = () = ( $seqs[$i] =~ m/CA/gi );
+	} elsif ($context eq 'CpC') {
+		$num_G = () = ( $seqs[$i] =~ m/C/gi );
+		$num_CG = () = ( $seqs[$i] =~ m/CC/gi );
+	} elsif ($context eq 'CpT') {
+		$num_G = () = ( $seqs[$i] =~ m/T/gi );
+		$num_CG = () = ( $seqs[$i] =~ m/CT/gi );
+	} else {
+		$num_G = 0;
+		$num_CG = 0;
+	}
     my $num_C = () = ( $seqs[$i] =~ m/C/gi );
-    my $num_CG = () = ( $seqs[$i] =~ m/CG/gi );
-    my $num_CA = () = ( $seqs[$i] =~ m/CA/gi );
 	my $num_TG = () = ( $seqs[$i] =~ m/TG/gi );
     my $CpGoe;
     if ( ($num_G == 0) || ($num_C == 0) || ($l == 1) || ($num_CG == 0) ) {
@@ -326,7 +346,7 @@ for my $i (0 .. $#names) {
       if ($algo == 3) {
 		print $OUT $len . "\t" . $num_CG . "\t" . $num_TG . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
 	  } else {
-		print $OUT $len . "\t" . $num_CG . "\t" . $num_GC . "\t" .$num_C. "\t" .$num_G. "\t" .$num_N. "\t";
+		print $OUT $len . "\t" . $num_CG . "\t" . $num_C  . "\t" .$num_G. "\t" .$num_N. "\t";
 	  }
     }
     print $OUT $CpGoe . "\n";
