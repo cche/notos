@@ -126,9 +126,9 @@ option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default
                                 help = "name of the output file for the outlier cutoff [default %default]"),
                     make_option(c("-k", "--kde-file"), type = "character", default = "KDE.pdf",
                                 help = "name of the output file for the KDE [default %default]"),
-                    make_option(c("-p", "--peak-file"), type = "character", default = "peaks.csv",
+                    make_option(c("-p", "--peak-file"), type = "character", default = "modes_basic_stats.csv",
                                 help = "name of the output file describing the peaks of the KDE [default %default]"),
-                    make_option(c("-s", "--bootstrap-file"), type = "character", default = "bootstrap.csv",
+                    make_option(c("-s", "--bootstrap-file"), type = "character", default = "modes_bootstrap.csv",
                                 help = "name of the output file for the bootstrap results [default %default]"),
                     make_option(c("-u", "--summary-file"), type = "character", default = "summary.csv",
                                 help = "name of the summary file for the KDE results [default %default]"),
@@ -426,7 +426,7 @@ for (i in 1:num.spec) {
   t.lty[usedindex] <- 1
 
   hist(obs.nz, breaks = t.breaks, xlim = t.xlim, xlab = "CpG o/e", main = "",
-      sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,4", prob = TRUE,
+      sub = "Data without zeros, Q1/3 +- k*IQR, k=2,...,5", prob = TRUE,
 	  col = grey(0.9), border = grey(0.6))
   abline(v = me.obs, col = 'blue', lwd = 2)
   abline(v = c(ll.me, ul.me), col = "red", lty = rep(t.lty, 2))

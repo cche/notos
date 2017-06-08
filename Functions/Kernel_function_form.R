@@ -159,7 +159,7 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
   hist_data <- hist(obs, breaks = t.breaks, plot = FALSE)
   hist(obs, breaks = t.breaks, prob = TRUE, main = t.name,
        # sub = paste("Gaussian kernel with band width", band.width),
-	   sub = "CpGo/e Ratio",
+	   xlab = "CpG o/e ratio",
        col = grey(0.9), border = grey(0.6)) #, xlim = c(-0.05, max(obs)*1.1))
   if (!is.null(t.sub)) {
     mtext(t.sub)
@@ -223,7 +223,7 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
       }
     }
     legend("topright", 
-           c(expression("Kernel Density"), md.labs),
+           c(expression("Estimated density"), md.labs),
            lty = c(1, 1, 2, 4), lwd = c(2, 3, 3, 3),
            col = c("red", "blue", "blue", "blue"), bg = "white") 
   }
