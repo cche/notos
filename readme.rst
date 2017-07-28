@@ -1,7 +1,7 @@
 Notos
 =====
 
-Notos is a suite that calculates CpGo/e ratios for nucleotide sequences and uses Kernel Density Estimation to model the distribution obtained.
+Notos is a suite that calculates CpGo/e ratios for nucleotide sequences and uses Kernel Density Estimation to model the obtained distribution.
 
 It consists of two programs, CpGoe.pl is used to prepare the CpG ratios and KDEanalysis.r estimates the model. 
 
@@ -9,9 +9,10 @@ CpGoe.pl
 --------
 
 
+This progrm will calculate CpN o/e ratios on nucleotide multi fasta files. It will output a file with each sequence name followed by the CpNo/e ratios, where N can be any of the nucletides A, C, G or T, into a TAB separated file.
+
 CpGoe.pl -f fasta-file -a algo -c context -o output_file -m minlength
 	
-Reads multi fasta files, writes name, length, CpGs and GpCs, CpGo/e ratios and other quantities into TAB file for each sequence.
 
 The available contexts (-c) are CpG, CpA, CpC, CpT. Default CpG. 
 
@@ -22,16 +23,11 @@ The algorithms (-a) available for -a are the following::
     3 => (CpG / L) / ((C + G) / L)^2
     4 => (CpG / (C + G)/2)^2
 		
-	Where L represents the length of the sequence, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
-
-Using the CpGo/e ratio to infer the type of methylation of a genome, whether it is global or mosaic.
-
+Where L represents the length of the sequence, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
 
 
 KDEanalysis.r
-
 -------------
-
 
 Model the distribution of CpG o/e ratios using Kernel Density Estimation.
 
