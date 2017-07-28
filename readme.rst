@@ -9,11 +9,11 @@ CpGoe.pl
 --------
 
 
-This program will calculate CpN o/e ratios on nucleotide multifasta files. For each sequence that is found in the file it will output the sequence name followed by the CpNo/e ratio, where N can be any of the nucletides A, C, G or T, into a TAB separated file.
+This program will calculate CpN o/e ratios on nucleotide multifasta files. For each sequence that is found in the file it will output the sequence name followed by the CpN o/e ratio, where N can be any of the nucletides A, C, G or T, into a TAB separated file.
 
 An example invocation would be:
 
-| perl CpGoe.pl -f input_species.fasta -a 1 -c CpG -o input_species_cpgoe.csv -m 200
+    perl CpGoe.pl -f input_species.fasta -a 1 -c CpG -o input_species_cpgoe.csv -m 200
 	
 
 The available contexts (-c) are CpG, CpA, CpC, CpT. Default CpG. 
@@ -35,7 +35,7 @@ Model the distribution of CpG o/e ratios using Kernel Density Estimation.
 
 Example basic usage on command line:
 
-| Rscript ~/src/github/notos/KDEanalysis.r "Input species" input_species_cpgoe.csv
+    Rscript ~/src/github/notos/KDEanalysis.r "Input species" input_species_cpgoe.csv
 
 
 In the above case "Input species" will be used to name the graphs that are produced as well as an identifier for each sample. It has to be surrounded by " if the name of the species contains spaces.
