@@ -11,7 +11,7 @@
     <inputs>
 		<param name="fastafile" type="data" format="fasta" />
 		<param name="context" type="select" label="Select context to calculate the CpNo/e ratio" >
-			<option value="CpG" selected="selected">CpG</option>
+			<option value="CpG" selected="true">CpG</option>
 			<option value="CpA">CpA</option>
 			<option value="CpC">CpC</option>
 			<option value="CpT">CpT</option>
