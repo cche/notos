@@ -50,8 +50,6 @@
 	Where L represents the length of the sequence, CpG represents the count of CG dinucleotide, C and G represent the count for the respective bases and TG represents the number of TG dinucleotides.
     ]]></help>
     <citations>
-        <citation>
           <citation type="doi">10.1101/180463</citation>
-        </citation>
     </citations>
 </tool>
