@@ -7,16 +7,16 @@
         <exit_code range="1:" />
     </stdio>
     <command><![CDATA[
-		Rscript ${__tool_directory__}/KDEanalysis.r 
-		-o $fracOutl 
-		-d $minDist 
-		-c $confLevel 
-		-m $modeMass 
-		-b $bandWidth 
+		Rscript ${__tool_directory__}/KDEanalysis.r
+		-o $fracOutl
+		-d $minDist
+		-c $confLevel
+		-m $modeMass
+		-b $bandWidth
 		#if $bootstrap == "TRUE"
-		-B 
+		-B
 		#end if
-		-r $BSrep 
+		-r $BSrep
 		#if $nofew == "TRUE"
 			-f
 		#end if
@@ -25,7 +25,7 @@
     ]]></command>
 		<inputs>
 			<param name="species" size="30" type="text" value="my_species" label="Species name" />
-		    <param name="cpgoe" type="data" format="tabular" />	
+		    <param name="cpgoe" type="data" format="tabular" />
 			<param name="fracOutl" type="float" value="0.01" help="maximum fraction of CpGo/e ratios excluded as outliers" label= "max fraction of CpGo/e ratios excluded as outliers" />
 			<param name="minDist" type="float" value="0.2" help="minimum distance between modes. Modes that are closer are joined" label= "min distance between modes to join" />
 			<param name="confLevel" type="float" value="0.95" help="level of the confidence intervals of the mode positions" label= "level of the confidence intervals of the mode positions" />
@@ -74,7 +74,7 @@ Parameters::
     ]]></help>
     <citations>
         <citation>
-            None yet
+            <citation type="doi">10.1101/180463</citation>
         </citation>
     </citations>
 </tool>
