@@ -126,6 +126,8 @@ option_list <- list(make_option(c("-o", "--frac-outl"), type = "double", default
                                 help = "name of the output file for the outlier cutoff [default %default]"),
                     make_option(c("-k", "--kde-file"), type = "character", default = "KDE.pdf",
                                 help = "name of the output file for the KDE [default %default]"),
+                    make_option(c("-v", "--valley-file"), type = "character", default = "valleys.csv",
+                                help = "name of the output file with the values for valleys of the KDE [default %default]"),
                     make_option(c("-p", "--peak-file"), type = "character", default = "modes_basic_stats.csv",
                                 help = "name of the output file describing the peaks of the KDE [default %default]"),
                     make_option(c("-s", "--bootstrap-file"), type = "character", default = "modes_bootstrap.csv",
@@ -347,6 +349,7 @@ for (i in 1:length(cpgoe.fnames)) {
   }
 }
 
+valleys.fname <- args$options$`valley-file`	
 
 # remove outliers and output histograms
 # ... set up table with cutoff quantities
@@ -487,6 +490,7 @@ for (i in 1:num.spec) {
   if (use.bstrp) {
     tab2.m[i, ] <- l$tab.bs
   }
+  valleys = l$valleys
 }
 invisible(dev.off())
 #sessionInfo()
@@ -494,6 +498,7 @@ invisible(dev.off())
 # ... output quantities in tables
 write.table(sum1.m, file = summ.fname, sep = "\t", col.names = NA)
 write.table(tab1.m, file = peak.fname, sep = "\t", col.names=NA)
+write.table(valleys, file = valleys.fname, sep = "\t", col.names=NA)
 if (use.bstrp) {
     write.table(tab2.m, file = bstrp.fname, sep = "\t", col.names=NA)
 }

@@ -202,9 +202,11 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
     abline(v = ker$x[p][close], col = "orange", lwd = 3, lty = p.lty) 
   }
   # valleys
+  vals = ""
   if (length(x.pos)>1) {
 #	ker$x[v][c(-1, -length(ker$x[v]))]
-	  abline(v = ker$x[v][c(-1, -length(ker$x[v]))] , col = "black", lwd = 1) 
+	  vals = ker$x[v][c(-1, -length(ker$x[v]))]
+	  abline(v = vals, col = "black", lwd = 1) 
   }
   
   # legend
@@ -299,9 +301,9 @@ plot.KDE <- function(obs, t.name, bs.cis = FALSE, bstrp.reps = 1500, conf.lev = 
 
   # return the results
   if (bs.cis){
-    return(list(tab.des = tab1.m, tab.bs = tab2.m))
+    return(list(tab.des = tab1.m, tab.bs = tab2.m, valleys = vals))
   } else {
-    return(list(tab.des = tab1.m))
+    return(list(tab.des = tab1.m, valleys = vals))
   }
 }
 
